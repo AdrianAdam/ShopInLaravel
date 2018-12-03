@@ -31,24 +31,30 @@ Route::get('/oneplus', function () {
 });
 
 Route::get('/shoppingcart', function() {
+    $id = Auth::user()->id;
     $produseProducator = DB::table('produse')
                             ->join('producator', 'idProducato', '=', 'idProducator');
     $produse = DB::table('shoppingcart')
                             ->joinSub($produseProducator, 'produseProducator', function($join) {
                                 $join->on('idProdusSC', '=', 'idProdus');
-                            })->get();
+                            })
+                            ->where('idUser', '=', $id)
+                            ->get();
    return view('shoppingcart', ['produse'=>$produse]);
-});
+})->middleware('auth');
 
 Route::get('/favourites', function() {
+    $id = Auth::user()->id;
     $produseProducator = DB::table('produse')
         ->join('producator', 'idProducato', '=', 'idProducator');
     $produse = DB::table('favourites')
         ->joinSub($produseProducator, 'produseProducator', function($join) {
             $join->on('idProdusFav', '=', 'idProdus');
-        })->get();
+        })
+        ->where('idUser', '=', $id)
+        ->get();
     return view('favourites', ['produse'=>$produse]);
-})->name('favourites');
+})->middleware('auth');
 
 Auth::routes();
 
