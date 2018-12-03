@@ -5,3 +5,5 @@ MySQL table structures: Users: the default one from Laravel. Products: name varc
 The user is connected with the favourites and shopping cart tables with idUser. These two tables are connected with the products: idProductFav / idProductSC with idProd. The product table is connected with producer table: idProduc with idProducer.
 
 Notes: you will have to make changes in the php files of my project where I take data from MySQL. For exemple, I used 'produse' to name the product table. If you want to name your table 'product' change the query from DB::table('produse') to DB::table('product'). The same applies for the other tables, database columns etc.
+
+You can see pictures of the website in the final results folder.
