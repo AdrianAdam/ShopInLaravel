@@ -107,8 +107,6 @@
                             <a href="{{ route('register') }}">Register</a>
                         @endif
                     @endauth
-
-                    <a href="{{ url('/apple') }}">Refresh</a>
                 </div>
             @endif
 
@@ -118,13 +116,14 @@
                 </div>
 
                 <div class="images">
-                    <figure>
+                    <figure style="width: 300px">
                         <img src="{{URL::asset('/img/X.jpg')}}" alt="IphoneX" style="width:300px;height:300px;border:0;">
                         <figcaption>
                             <span>{{$produse[0]->name}}</span>
                         </figcaption>
                         <span>Price: {{$produse[0]->pret}}</span></br>
                         <span>In store: {{$produse[0]->cantitate}}</span></br>
+                        <span>Details: </br> {{$produse[0]->descriere}}</span></br>
                         @auth
                         <form method="get">
                             <button type="submit" name="submit_fav_id" value="{{$produse[0]->idProdus}}" class="button rounded-button">Add to favorites</button>
@@ -132,13 +131,14 @@
                         </form>
                         @endauth
                     </figure>
-                    <figure>
+                    <figure style="width: 300px">
                         <img src="{{URL::asset('/img/XS.jpg')}}" alt="IphoneX" style="width:300px;height:300px;border:0;">
                         <figcaption>
                             <span>{{$produse[1]->name}}</span>
                         </figcaption>
                         <span>Price: {{$produse[1]->pret}}</span></br>
                         <span>In store: {{$produse[1]->cantitate}}</span></br>
+                        <span>Details: </br> {{$produse[1]->descriere}}</span></br>
                         @auth
                         <form method="get">
                             <button type="submit" name="submit_fav_id" value="{{$produse[1]->idProdus}}" class="button rounded-button">Add to favorites</button>
@@ -146,13 +146,14 @@
                         </form>
                         @endauth
                     </figure>
-                    <figure>
+                    <figure style="width: 300px">
                         <img src="{{URL::asset('/img/XSMax.jpg')}}" alt="IphoneX" style="width:300px;height:300px;border:0;">
                         <figcaption>
                             <span>{{$produse[2]->name}}</span>
                         </figcaption>
                         <span>Price: {{$produse[2]->pret}}</span></br>
                         <span>In store: {{$produse[2]->cantitate}}</span></br>
+                        <span>Details: </br> {{$produse[2]->descriere}}</span></br>
                         @auth
                         <form method="get">
                             <button type="submit" name="submit_fav_id" value="{{$produse[2]->idProdus}}" class="button rounded-button">Add to favorites</button>

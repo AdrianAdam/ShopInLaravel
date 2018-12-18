@@ -108,8 +108,6 @@
                             <a href="{{ route('register') }}">Register</a>
                         @endif
                     @endauth
-
-                    <a href="{{ url('/samsung') }}">Refresh</a>
                 </div>
             @endif
 
@@ -119,13 +117,14 @@
                 </div>
 
                 <div class="images">
-                    <figure>
+                    <figure style="width: 300px">
                         <img src="{{URL::asset('/img/S9.jpg')}}" alt="SamsungS9" style="width:300px;height:300px;border:0;">
                         <figcaption>
                             <span>{{$produse[0]->name}}</span>
                         </figcaption>
                         <span>Price: {{$produse[0]->pret}}</span></br>
                         <span>In store: {{$produse[0]->cantitate}}</span></br>
+                        <span>Details: </br> {{$produse[0]->descriere}}</span></br>
                         @auth
                         <form method="get">
                             <button type="submit" name="submit_fav_id" value="{{$produse[0]->idProdus}}" class="button rounded-button">Add to favorites</button>
@@ -133,13 +132,14 @@
                         </form>
                         @endauth
                     </figure>
-                    <figure>
+                    <figure style="width: 300px">
                         <img src="{{URL::asset('/img/S8.jpg')}}" alt="Samsung S8" style="width:300px;height:300px;border:0;">
                         <figcaption>
                             <span>{{$produse[1]->name}}</span>
                         </figcaption>
                         <span>Price: {{$produse[1]->pret}}</span></br>
                         <span>In store: {{$produse[1]->cantitate}}</span></br>
+                        <span>Details: </br> {{$produse[1]->descriere}}</span></br>
                         @auth
                         <form method="get">
                             <button type="submit" name="submit_fav_id" value="{{$produse[1]->idProdus}}" class="button rounded-button">Add to favorites</button>

@@ -38,6 +38,11 @@
                 font-size: 84px;
             }
 
+            .title > form > button {
+                width: 100px;
+                height: 50px;
+            }
+
             .m-b-md {
                 margin-bottom: 30px;
             }
@@ -88,6 +93,11 @@
 
             .rounded-button {border-radius: 12px;}
 
+            .textShoppingCart {
+                width: 300px;
+                display: inline-block;
+            }
+
         </style>
     </head>
     <body>
@@ -120,24 +130,28 @@
 
                 <div class="text">
                     @foreach($produse as $key => $data)
-                        <h3>{{$data->name}}</h3>
-                        <form method="get">
-                            <h3>Price: {{$data->pret}} <span>Quantity:
-                                    <button type="submit" name="minus_quant" value="{{$data->idProdus}}" class="button rounded-button">-</button>
-                                    {{$data->cantitateSC}}
-                                    <button type="submit" name="plus_quant" value="{{$data->idProdus}}" class="button rounded-button">+</button>
-                                </span>
-                            </h3>
-                        </form>
-                        <h3>Final Price: {{$data->pret * $data->cantitateSC}}</h3>
-                        <span>{{$data->nameProducator}}</span>
-                        <span>{{$data->address}}</span> </br>
-                        <form method="get">
-                            <button type="submit" name="remove_id" value="{{$data->idProdus}}" class="button rounded-button">Remove</button>
-                            <button type="submit" name="buy_id" value="{{$data->idProdus}}" class="button rounded-button">Buy now</button>
-                        </form>
-                        </br> </br>
+                        <div class="textShoppingCart">
+                            <h3>{{$data->name}}</h3>
+                            <form method="get">
+                                <h3>Price: {{$data->pret}} <span>Quantity:
+                                        <input type="number" name="quantity" placeholder="{{$data->cantitateSC}}" style="width: 40px">
+                                        <button type="submit" name="quantity_id" value="{{$data->idProdus}}" style="display: none"></button>
+                                    </span>
+                                </h3>
+                            </form>
+                            <h3>Final Price: {{$data->pret * $data->cantitateSC}}</h3>
+                            <form method="get">
+                                <button type="submit" name="remove_id" value="{{$data->idProdus}}" class="button rounded-button">Remove</button>
+                            </form>
+                            </br> </br>
+                        </div>
                     @endforeach
+                </div>
+
+                <div class="title m-b-md">
+                    <form method="get">
+                        <button type="submit" name="buy_id" class="button rounded-button">Buy now</button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -150,30 +164,27 @@
         }
 
         if(isset($_GET['buy_id'])){
-            $id_prod = $_GET['buy_id'];
-            $cant = DB::table('shoppingcart')->where('idProdusSC', '=', $id_prod)->value('cantitateSC');
-            $cantitateNoua = DB::table('produse')->where('idProdus', '=', $id_prod)->value('cantitate');
-            $cantitateNoua -= $cant;
-            DB::table('shoppingcart')->where('idProdusSC', '=', $id_prod)->delete();
-            DB::table('produse')->where('idProdus', '=', $id_prod)->update(['cantitate' => $cantitateNoua]);
-        }
+            $prod = DB::table('shoppingcart')->get();
+            $id_order = DB::table('orders')->max('idOrder');
+            $id_order += 1;
 
-        if(isset($_GET['minus_quant'])) {
-            $id_prod = $_GET['minus_quant'];
-            $cant = DB::table('shoppingcart')->where('idProdusSC', '=', $id_prod)->value('cantitateSC');
-            $cant -= 1;
-            if($cant == 0) {
-                DB::table('shoppingcart')->where('idProdusSC', '=', $id_prod)->delete();
-            } else {
-                DB::table('shoppingcart')->where('idProdusSC', '=', $id_prod)->update(['cantitateSC' => $cant]);
+            foreach($prod as $key => $data) {
+                DB::table('orders')->insert([['idOrder' => $id_order, 'idProdusOrder' => $data->idProdusSC, 'idUserOrder' => Auth::id(), 'cantitateOrder' => $data->cantitateSC]]);
+                $cant = DB::table('shoppingcart')->where('idProdusSC', '=', $data->idProdusSC)->value('cantitateSC');
+                $cantitateNoua = DB::table('produse')->where('idProdus', '=', $data->idProdusSC)->value('cantitate');
+                $cantitateNoua -= $cant;
+                DB::table('shoppingcart')->where('idProdusSC', '=', $data->idProdusSC)->delete();
+                DB::table('produse')->where('idProdus', '=', $data->idProdusSC)->update(['cantitate' => $cantitateNoua]);
             }
         }
 
-        if(isset($_GET['plus_quant'])) {
-            $id_prod = $_GET['plus_quant'];
-            $cant = DB::table('shoppingcart')->where('idProdusSC', '=', $id_prod)->value('cantitateSC');
-            $cant += 1;
-            DB::table('shoppingcart')->where('idProdusSC', '=', $id_prod)->update(['cantitateSC' => $cant]);
+        if(isset($_GET['quantity'])) {
+            $cantNoua = $_GET['quantity'];
+            $id_prod = $_GET['quantity_id'];
+            $cant = DB::table('produse')->where('idProdus', '=', $id_prod)->value('cantitate');
+            if($cant >= $cantNoua) {
+                DB::table('shoppingcart')->where('idProdusSC', '=', $id_prod)->update(['cantitateSC' => $cantNoua]);
+            }
         }
         ?>
 

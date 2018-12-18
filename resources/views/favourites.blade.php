@@ -88,6 +88,11 @@
 
             .rounded-button {border-radius: 12px;}
 
+            .textFavourites {
+                width: 300px;
+                display: inline-block;
+            }
+
         </style>
     </head>
     <body>
@@ -120,22 +125,24 @@
 
                 <div class="text">
                     @foreach($produse as $key => $data)
-                        <h3>{{$data->name}}</h3>
-                        <form method="get">
-                            <h3>Price: {{$data->pret}} <span>Quantity:
-                                    <button type="submit" name="minus_quant" value="{{$data->idProdus}}" class="button rounded-button">-</button>
-                                    {{$data->cantitateFav}}
-                                    <button type="submit" name="plus_quant" value="{{$data->idProdus}}" class="button rounded-button">+</button>
-                                </span>
-                            </h3>
-                        </form>
-                        <span>{{$data->nameProducator}}</span>
-                        <span>{{$data->address}}</span> </br>
-                        <form method="get">
-                            <button type="submit" name="remove_id" value="{{$data->idProdus}}" class="button rounded-button">Remove from favourites</button>
-                            <button type="submit" name="add_sc_id" value="{{$data->idProdus}}" class="button rounded-button">Add to shopping cart</button>
-                        </form>
-                        </br> </br>
+                        <div class="textFavourites">
+                            <h3>{{$data->name}}</h3>
+                            <form method="get">
+                                <h3>Price: {{$data->pret}} <span>Quantity:
+                                        <input type="number" name="quantity" placeholder="{{$data->cantitateFav}}" style="width: 40px">
+                                        <button type="submit" name="quantity_id" value="{{$data->idProdus}}" style="display: none"></button>
+                                    </span>
+                                </h3>
+                            </form>
+                            <span>{{$data->nameProducator}}</span>
+                            <span>{{$data->address}}</span> </br> </br>
+                            <span>{{$data->descriere}}</span> </br>
+                            <form method="get" action="{{url('/favourites')}}">
+                                <button type="submit" name="remove_id" value="{{$data->idProdus}}" class="button rounded-button">Remove from favourites</button>
+                                <button type="submit" name="add_sc_id" value="{{$data->idProdus}}" class="button rounded-button">Add to shopping cart</button>
+                            </form>
+                            </br> </br>
+                        </div>
                     @endforeach
                 </div>
             </div>
@@ -162,22 +169,13 @@
              }
          }
 
-         if(isset($_GET['minus_quant'])) {
-             $id_prod = $_GET['minus_quant'];
-             $cant = DB::table('favourites')->where('idProdusFav', '=', $id_prod)->value('cantitateFav');
-             $cant -= 1;
-             if($cant == 0) {
-                 DB::table('favourites')->where('idProdusFav', '=', $id_prod)->delete();
-             } else {
-                 DB::table('favourites')->where('idProdusFav', '=', $id_prod)->update(['cantitateFav' => $cant]);
+         if(isset($_GET['quantity'])) {
+             $cantNoua = $_GET['quantity'];
+             $id_prod = $_GET['quantity_id'];
+             $cant = DB::table('produse')->where('idProdus', '=', $id_prod)->value('cantitate');
+             if($cant >= $cantNoua) {
+                 DB::table('favourites')->where('idProdusFav', '=', $id_prod)->update(['cantitateFav' => $cantNoua]);
              }
-         }
-
-         if(isset($_GET['plus_quant'])) {
-             $id_prod = $_GET['plus_quant'];
-             $cant = DB::table('favourites')->where('idProdusFav', '=', $id_prod)->value('cantitateFav');
-             $cant += 1;
-             DB::table('favourites')->where('idProdusFav', '=', $id_prod)->update(['cantitateFav' => $cant]);
          }
          ?>
 
